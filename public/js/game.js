@@ -26,9 +26,10 @@ function preload() {
 }
 
 function create() {
-  var self = this;
+  const self = this;
   this.socket = io();
   this.otherPlayers = this.physics.add.group();
+
   this.socket.on('currentPlayers', players => {
     Object.keys(players).forEach(id => {
       if (players[id].playerId === self.socket.id) {
@@ -38,9 +39,11 @@ function create() {
       }
     });
   });
+
   this.socket.on('newPlayer', playerInfo => {
     addOtherPlayers(self, playerInfo);
   });
+
   this.socket.on('disconnect', playerId => {
     self.otherPlayers.getChildren().forEach(otherPlayer => {
       if (playerId === otherPlayer.playerId) {
@@ -48,6 +51,7 @@ function create() {
       }
     });
   });
+
   this.cursors = this.input.keyboard.createCursorKeys();
 
   this.socket.on('playerMoved', playerInfo => {
