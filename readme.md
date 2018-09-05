@@ -8,7 +8,7 @@ When a new player connects, the server adds the new player to a `players` object
 
 The server then sends the updated `players` object, a random star location, and the current score to the new player using `socket.emit`, and sends just the new player's information to all the other players using `socket.broadcast.emit`.
 
-The `io` event listener contains three `socket` event listeners that listen for events from the client. The first listens for a `disconnect` event. When it is triggered, it removes the player from the `players` object and emits a `disconnect` event with the socket id to all players (including the current one) using `io.emit`.
+The `connection` event listener contains three event listeners on the `socket` object that listen for events from the client. The first listens for a `disconnect` event. When it is triggered, it removes the player from the `players` object and emits a `disconnect` event with the socket id to all players (including the current one) using `io.emit`.
 
 The second socket event listener listens for a `playerMovement` event. It is responsible for updating all other players with the movement of an individual player. When it is triggered, it updates the `x`, `y`, and `rotation` properties of the player with that socket id in the `players` object, and broadcasts the player's updated information to all other players.
 
@@ -27,15 +27,15 @@ At the top of `game.js` a new game instance is created with the following config
 
 The `preload` function loads all of the game's images.
 
-The `create` function is responsible for initializing the game world and establishing a connection with the server. It also updates the game environment when it receives information about the game state from the server.
+The `create` function is responsible for initializing the game world and establishing a connection with the server. It also updates the game environment when it receives information about the game state from the server. The function first sets up a reference to the `Phaser.Game` instance and stores it in a `self` variable for use later. Then it establishes a socket connection with a call to `io()`. It also sets up a new `group` to contain all other players.
 
-When the player first connects to the server they will receive a `currentPlayers` event that gives them the `players` object with all of the players info. The `currentPlayers` event listener loops through this object and adds the players to the game. When it reaches the player with an id matching the current player's socket id, it adds the player's ship object (complete with sprite and physics) to the game world. For all other players, it simply adds the `'otherPlayer'` sprite to the game world and adds the player to the `otherPlayers` `group` object.
+When the player first connects to the server they will receive a `currentPlayers` event that gives them the `players` object with all of the players info. The `currentPlayers` event listener loops through this object and adds the players to the game. When it reaches the player with an id matching the current player's socket id, it adds the player's ship object (complete with sprite and physics) to the game world. For all other players, it initializes an `'otherPlayer'` object with the player info adds the player to the `otherPlayers` `group` object.
 
 When a new player joins the game after the current player has joined, the `newPlayer` event listener will fire and add the new player sprite to the world and add their info to the `otherPlayers` `group` object.
 
-When another player disconnects, the `disconnect` event listener loops through the `otherPlayers` object and `destroy`s the player with the matching id.
+When another player disconnects, the `disconnect` event listener loops through the `otherPlayers` `group` object and `destroy`s the player with the matching id.
 
-Whenever a player moves the server sends a `playerMoved` event to all other clients with the moving player's new location data. The `playerMoved` event listener updates the `otherPlayers` object with the new data.
+Whenever a player moves, the server sends a `playerMoved` event to all other clients with the moving player's new location data. The `playerMoved` event listener updates the `otherPlayers` object with the new data.
 
 When the player first connects or a star is collected, the server sends `scoreUpdate` and `starLocation` events to the client with the latest data. The `scoreUpdate` listener updates the text with the new score. The `starLocation` destroys the previous star object if it exists and adds a new star object to the game world. It also adds an overlap listener to the new star that emits a `starCollected` event to the server if the player's ship touches the star.
 
