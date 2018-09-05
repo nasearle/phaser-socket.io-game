@@ -6,7 +6,7 @@ The server is written in Express and uses the Socket.io library to establish a c
 
 When a new player connects, the server adds the new player to a `players` object with the socket id as the key. It sets random values for the player's location and team properties, and stores the socket id as the `playerId`.
 
-Then the server sends the updated `players` object, a random star location, and the current score to the new player using `socket.emit`, and sends just the new player's information to all the other players using `socket.broadcast.emit`.
+The server then sends the updated `players` object, a random star location, and the current score to the new player using `socket.emit`, and sends just the new player's information to all the other players using `socket.broadcast.emit`.
 
 The `io` event listener contains three `socket` event listeners that listen for events from the client. The first listens for a `disconnect` event. When it is triggered, it removes the player from the `players` object and emits a `disconnect` event with the socket id to all players (including the current one) using `io.emit`.
 
