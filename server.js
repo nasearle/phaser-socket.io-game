@@ -28,7 +28,7 @@ app.use(session);
 io.use(sharedsession(session));
 
 app.get('/', (req, res) => {
-  // req.session.user_exists = false;
+  req.session.ship_exists = false;
   res.sendFile(__dirname + '/index.html');
 });
 
@@ -38,7 +38,7 @@ io.on('connection', socket => {
   // if the player doesn't already have an existing session, create a new player
   // (check prevents creating multiple ships when browser auto disconnects
   // and reconnects socket)
-  if (!socket.handshake.session.user_exists) {
+  if (!socket.handshake.session.ship_exists) {
     // create a new player and add it to our players object
     players[socket.id] = { rotation: 0, x: Math.floor(Math.random() * 700) + 50, y: Math.floor(Math.random() * 500) + 50, playerId: socket.id, team: Math.floor(Math.random() * 2) == 0 ? 'red' : 'blue' };
     // send the players object to the new player
@@ -50,7 +50,7 @@ io.on('connection', socket => {
     // update all other players of the new player
     socket.broadcast.emit('newPlayer', players[socket.id]);
 
-    socket.handshake.session.user_exists = true;
+    socket.handshake.session.ship_exists = true;
     socket.handshake.session.save();
   }
 
