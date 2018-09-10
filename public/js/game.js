@@ -1,4 +1,4 @@
-var config = {
+const config = {
   type: Phaser.AUTO,
   parent: 'phaser-example',
   width: 800,
@@ -17,7 +17,7 @@ var config = {
   }
 };
 
-var game = new Phaser.Game(config);
+const game = new Phaser.Game(config);
 
 function preload() {
   this.load.image('ship', 'assets/spaceShips_001.png');
@@ -100,9 +100,9 @@ function update() {
     this.physics.world.wrap(this.ship, 5);
 
     // emit player movement
-    var x = this.ship.x;
-    var y = this.ship.y;
-    var r = this.ship.rotation;
+    const x = this.ship.x;
+    const y = this.ship.y;
+    const r = this.ship.rotation;
     if (this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y || r !== this.ship.oldPosition.rotation)) {
       this.socket.emit('playerMovement', { x: this.ship.x, y: this.ship.y, rotation: this.ship.rotation });
     }
