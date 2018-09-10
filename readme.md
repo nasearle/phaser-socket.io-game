@@ -1,6 +1,8 @@
 ### Game made with Phaser and Socket.io
 This game was made with [Phaser](https://phaser.io/) (v3.12) and [Socket.io](https://socket.io/) on Node. The game allows multiple players to join a server and play together in real time. When a player joins, they get a ship to control and are randomly assigned to a team. The goal is to collect the most stars to get the highest score.
 
+[DEMO](https://awesome-top.glitch.me/)
+
 ### Server Logic (server.js)
 The server is written in Express and uses the Socket.io library to establish a connection with the client. The server contains an `io.on('connection', socket => { ... })` event listener that is called when a new player connects. The listener creates a new socket object that can receive events from the client and emit events to just the one client (`socket.emit`), all other clients (`socket.broadcast.emit`), or all existing clients (`io.emit`). The `connection` listener contains all the server-side logic for the game.
 
